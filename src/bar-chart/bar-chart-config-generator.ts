@@ -52,9 +52,10 @@ function generateLabels(entries: CovidDataEntry[]): string[] {
 }
 
 function getDataSetFromRegions(dataEntry: CovidDataEntry): ChartDataSets {
+    const firstCaseIndex = Math.max(dataEntry.cases.findIndex(caseNum => caseNum > 0), 0);
     return {
         label: dataEntry.state ? `${dataEntry.state}, ${dataEntry.country}` : dataEntry.country,
-        data: dataEntry.cases,
+        data: dataEntry.cases.slice(firstCaseIndex),
         backgroundColor: 'rgba(255, 99, 132, 0.2)',
         borderColor: 'rgba(255, 99, 132, 1)',
         borderWidth: 1
