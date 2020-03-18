@@ -1,13 +1,10 @@
+import { createStyles, IconButton, Theme, WithStyles, withStyles } from '@material-ui/core';
 import { observer } from 'mobx-react';
 import React from 'react';
-import ChartJS from '../chart-js-shim/chart-js';
 import { ObservableCovidStore } from '../covid-store/covid-store';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import { createStyles, WithStyles, Theme, withStyles } from '@material-ui/core';
+import SingleSliceSelect from './single-slice-select';
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
 
 export interface IProps extends WithStyles<typeof styles> {
     dataStore: ObservableCovidStore;
@@ -29,47 +26,32 @@ class DataSliceSelector extends React.Component<IProps, IState> {
     public render(){
         const covidStore = this.props.dataStore;
         const options = covidStore.validDataSelection;
-        const selected = covidStore.selectedDataSet;
         
-        function countryChanged(country: string){
-            covidStore.countrySliceSelected(country === "None" ? undefined : country);
+        function countryChanged(country: string, index: number){
+            covidStore.countrySliceSelected(country === "None" ? undefined : country, index);
         }
-        function stateChanged(state: string){
-            covidStore.stateSliceSelected(state === "None" ? undefined : state);
+        function stateChanged(state: string, index: number){
+            covidStore.stateSliceSelected(state === "None" ? undefined : state, index);
         }
 
         return (
             <div className="select-container">
-                <FormControl className={this.props.classes.formControl}>
-                    <InputLabel id="country-select-label">Country</InputLabel>
-                    <Select
-                        labelId="country-select-label"
-                        id="country-select"
-                        value={selected?.country ?? 'None'}
-                        onChange={(event) => countryChanged(event.target.value as string)}
-                    >
-                        {Object.keys(options).map(country => (
-                            <MenuItem value={country} key={country}>{country}</MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-                {
-                    selected.country && options[selected.country] && options[selected.country].length > 0 &&
-                    <FormControl className={this.props.classes.formControl}>
-                        <InputLabel id="state-select-label">State</InputLabel>
-                        <Select
-                            labelId="state-select-label"
-                            id="state-select"
-                            value={selected.state ?? 'None'}
-                            onChange={(event) => stateChanged(event.target.value as string)}
-                        >
-                            <MenuItem value={'None'}>Whole Country</MenuItem>
-                            {selected.country && options[selected.country]?.map(state =>(
-                                <MenuItem value={state} key={state}>{state}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                }
+                <IconButton onClick={() => covidStore.addNewSliceSelection()}>
+                    <AddIcon></AddIcon>
+                </IconButton>
+                {covidStore.selectedDataSets.map((dataSelection, index) =>
+                <div key={index}>
+                    <IconButton onClick={() => covidStore.removeSliceSelection(index)}>
+                        <RemoveIcon></RemoveIcon>
+                    </IconButton>
+                    <SingleSliceSelect
+                        countryChanged={(country) => countryChanged(country, index)}
+                        stateChanged={(state) => stateChanged(state, index)}
+                        dataSlice={dataSelection}
+                        dataSelectionOptions={covidStore.validDataSelection}
+                    ></SingleSliceSelect>
+                </div>)}
+                
             </div>
         );
     }

@@ -24,7 +24,7 @@ class BarChart extends React.Component<IProps, IState> {
         if(covidStore.covidData) {
             const chartConfig = getChartConfigFromCovidData(
                 covidStore.covidData,
-                {selectedRegions: [covidStore.selectedDataSet]})
+                {selectedRegions: covidStore.selectedDataSets})
            
             return (
                 <div className="bar-chart">

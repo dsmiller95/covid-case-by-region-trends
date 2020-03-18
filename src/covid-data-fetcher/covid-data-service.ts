@@ -33,7 +33,6 @@ export async function getRawCovidTimeSeriesData(): Promise<TimeSeriesDataRow[]> 
                 }
             }
         });
-        console.log(resultJSON);
         return resultJSON.data;
     }
     return [];

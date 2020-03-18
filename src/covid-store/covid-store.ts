@@ -16,12 +16,12 @@ export class ObservableCovidStore {
     @observable covidData: CovidData | undefined;
     @observable loaded: boolean = true;
     
-    @observable selectedDataSet: SubsetSelection;
+    @observable selectedDataSets: SubsetSelection[];
 
     constructor(){
-        this.selectedDataSet = {
+        this.selectedDataSets = [{
             country: "China"
-        };
+        }];
         getRawCovidTimeSeriesData()
             .then(data => crunchNumbers(data))
             .then(covidData => this.covidData = covidData)
@@ -44,19 +44,26 @@ export class ObservableCovidStore {
     }
 
     @action setSelectedDataSet(selection: SubsetSelection){
-        this.selectedDataSet = selection;
+        this.selectedDataSets[0] = selection;
     }
 
-    @action countrySliceSelected(country?: string){
-        if(country && this.selectedDataSet.country !== country){
-            this.selectedDataSet = {country}
+    @action countrySliceSelected(country: string | undefined, index: number){
+        if(country && this.selectedDataSets[index].country !== country){
+            this.selectedDataSets[index] = {country}
         }
     }
 
-    @action stateSliceSelected(state?: string){
-        if(this.selectedDataSet.state !== state){
-            this.selectedDataSet.state = state
+    @action stateSliceSelected(state: string | undefined, index: number){
+        if(this.selectedDataSets[index].state !== state){
+            this.selectedDataSets[index].state = state
         }
+    }
+
+    @action addNewSliceSelection(){
+        this.selectedDataSets.push({country: ''});
+    }
+    @action removeSliceSelection(index: number){
+        this.selectedDataSets.splice(index, 1);
     }
     
 }
