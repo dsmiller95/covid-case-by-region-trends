@@ -1,7 +1,6 @@
 
-import { observable, action, computed } from "mobx";
+import { action, computed, observable } from "mobx";
 import { CovidData } from './covid-data-model';
-import { stringify } from "querystring";
 
 export interface SubsetSelection {
     country: string;
@@ -34,6 +33,21 @@ export class ObservableCovidStore {
                             cases: [0, 50, 100, 120, 150]
                         }
                     }
+                },
+                "United states": {
+                    country: 'United states',
+                    stateData: {
+                        Wisconsin: {
+                            state: 'Wisconsin',
+                            country: 'United states',
+                            cases: [0, 0, 0, 1, 4]
+                        },
+                        California: {
+                            state: 'California',
+                            country: 'United states',
+                            cases: [0, 0, 3, 5, 100]
+                        }
+                    }
                 }
             }
         };
@@ -59,6 +73,18 @@ export class ObservableCovidStore {
 
     @action setSelectedDataSet(selection: SubsetSelection){
         this.selectedDataSet = selection;
+    }
+
+    @action countrySliceSelected(country?: string){
+        if(country && this.selectedDataSet.country !== country){
+            this.selectedDataSet = {country}
+        }
+    }
+
+    @action stateSliceSelected(state?: string){
+        if(this.selectedDataSet.state !== state){
+            this.selectedDataSet.state = state
+        }
     }
     
 }

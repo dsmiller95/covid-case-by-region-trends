@@ -11,6 +11,18 @@ export function getChartConfigFromCovidData(data: CovidData, subsetSelection: Su
             }
             if(region.state && dataSlice.stateData){
                 return dataSlice.stateData[region.state];
+            } else if (dataSlice.stateData) {
+                const allCasesForCountry = Object.values(dataSlice.stateData)
+                    .map(slice => slice.cases);
+                const dataSummation = allCasesForCountry[0].map((stateCases, index) => 
+                    allCasesForCountry
+                        .map(cases => cases[index])
+                        .reduce((previous, current) => previous + current)
+                );
+                return {
+                    country: dataSlice.country,
+                    cases: dataSummation
+                }
             }
             return dataSlice.data
         })

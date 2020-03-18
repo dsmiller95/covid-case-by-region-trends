@@ -32,16 +32,10 @@ class DataSliceSelector extends React.Component<IProps, IState> {
         const selected = covidStore.selectedDataSet;
         
         function countryChanged(country: string){
-            if(covidStore.selectedDataSet){
-                covidStore.setSelectedDataSet({...covidStore.selectedDataSet, country});
-            } else {
-                covidStore.setSelectedDataSet({state: undefined, country});
-            }
+            covidStore.countrySliceSelected(country === "None" ? undefined : country);
         }
         function stateChanged(state: string){
-            if(covidStore.selectedDataSet){
-                covidStore.setSelectedDataSet({...covidStore.selectedDataSet, state});
-            }
+            covidStore.stateSliceSelected(state === "None" ? undefined : state);
         }
 
         return (
@@ -51,7 +45,7 @@ class DataSliceSelector extends React.Component<IProps, IState> {
                     <Select
                         labelId="country-select-label"
                         id="country-select"
-                        value={selected?.country ?? ''}
+                        value={selected?.country ?? 'None'}
                         onChange={(event) => countryChanged(event.target.value as string)}
                     >
                         {Object.keys(options).map(country => (
@@ -64,11 +58,11 @@ class DataSliceSelector extends React.Component<IProps, IState> {
                     <Select
                         labelId="state-select-label"
                         id="state-select"
-                        value={selected?.state ?? ''}
+                        value={selected.state ?? 'None'}
                         onChange={(event) => stateChanged(event.target.value as string)}
                     >
-                        <MenuItem value={undefined}>Whole Country</MenuItem>
-                        {selected?.country && options[selected.country].map(state =>(
+                        <MenuItem value={'None'}>Whole Country</MenuItem>
+                        {selected.country && options[selected.country].map(state =>(
                             <MenuItem value={state} key={state}>{state}</MenuItem>
                         ))}
                     </Select>
