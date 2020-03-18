@@ -62,7 +62,7 @@ class DataSliceSelector extends React.Component<IProps, IState> {
                         onChange={(event) => stateChanged(event.target.value as string)}
                     >
                         <MenuItem value={'None'}>Whole Country</MenuItem>
-                        {selected.country && options[selected.country].map(state =>(
+                        {selected.country && options[selected.country]?.map(state =>(
                             <MenuItem value={state} key={state}>{state}</MenuItem>
                         ))}
                     </Select>

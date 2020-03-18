@@ -2,6 +2,7 @@
 import { action, computed, observable } from "mobx";
 import { CovidData } from './covid-data-model';
 import { getRawCovidTimeSeriesData } from "../covid-data-fetcher/covid-data-service";
+import { crunchNumbers } from "../covid-data-fetcher/covid-data-processer";
 
 export interface SubsetSelection {
     country: string;
@@ -18,44 +19,12 @@ export class ObservableCovidStore {
     @observable selectedDataSet: SubsetSelection;
 
     constructor(){
-        this.covidData = {
-            regions: {
-                China: {
-                    country: 'China',
-                    stateData: {
-                        Beijing: {
-                            state: 'Beijing',
-                            country: 'China',
-                            cases: [100, 120, 150, 500, 600]
-                        },
-                        Wuhan: {
-                            state: 'Wuhan',
-                            country: 'China',
-                            cases: [0, 50, 100, 120, 150]
-                        }
-                    }
-                },
-                "United states": {
-                    country: 'United states',
-                    stateData: {
-                        Wisconsin: {
-                            state: 'Wisconsin',
-                            country: 'United states',
-                            cases: [0, 0, 0, 1, 4]
-                        },
-                        California: {
-                            state: 'California',
-                            country: 'United states',
-                            cases: [0, 0, 3, 5, 100]
-                        }
-                    }
-                }
-            }
-        };
         this.selectedDataSet = {
             country: "China"
         };
         getRawCovidTimeSeriesData()
+            .then(data => crunchNumbers(data))
+            .then(covidData => this.covidData = covidData)
             .then(data => console.log(data));
     }
 
