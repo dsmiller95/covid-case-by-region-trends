@@ -1,6 +1,7 @@
 
 import { action, computed, observable } from "mobx";
 import { CovidData } from './covid-data-model';
+import { getRawCovidTimeSeriesData } from "../covid-data-fetcher/covid-data-service";
 
 export interface SubsetSelection {
     country: string;
@@ -53,7 +54,9 @@ export class ObservableCovidStore {
         };
         this.selectedDataSet = {
             country: "China"
-        }
+        };
+        getRawCovidTimeSeriesData()
+            .then(data => console.log(data));
     }
 
     @computed get validDataSelection(): {[country: string]: string[]} {
