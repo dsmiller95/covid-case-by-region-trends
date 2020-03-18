@@ -9,7 +9,6 @@ export function crunchNumbers(rawData: TimeSeriesDataRow[]): CovidData {
     rawData.forEach(row => {
         if(row.State && row.State.length > 0){
             let countryData: CovidDataCountry =
-                outputData.regions[row.Country] =
                 outputData.regions[row.Country] ?? {
                     country: row.Country,
                     stateData: {}
@@ -17,12 +16,19 @@ export function crunchNumbers(rawData: TimeSeriesDataRow[]): CovidData {
             if(!countryData.stateData){
                 throw new Error(`processing error: country ${row.Country} has row with state ${row.State} after a row with no state`)
             }
-            countryData.stateData[row.State] = convertRowToDataEntry(row);
+            const dataEntry = convertRowToDataEntry(row);
+            if(dataEntry.cases.some(x => x > 0)) {
+                countryData.stateData[row.State] = convertRowToDataEntry(row);
+                outputData.regions[row.Country] = countryData;
+            }
 
         } else {
-            outputData.regions[row.Country] = {
-                country: row.Country,
-                data: convertRowToDataEntry(row)
+            const dataEntry = convertRowToDataEntry(row);
+            if(dataEntry.cases.some(x => x > 0)) {
+                outputData.regions[row.Country] = {
+                    country: row.Country,
+                    data: convertRowToDataEntry(row)
+                }
             }
         }
     });

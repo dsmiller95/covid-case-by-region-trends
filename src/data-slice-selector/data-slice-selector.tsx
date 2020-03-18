@@ -53,20 +53,23 @@ class DataSliceSelector extends React.Component<IProps, IState> {
                         ))}
                     </Select>
                 </FormControl>
-                <FormControl className={this.props.classes.formControl}>
-                    <InputLabel id="state-select-label">State</InputLabel>
-                    <Select
-                        labelId="state-select-label"
-                        id="state-select"
-                        value={selected.state ?? 'None'}
-                        onChange={(event) => stateChanged(event.target.value as string)}
-                    >
-                        <MenuItem value={'None'}>Whole Country</MenuItem>
-                        {selected.country && options[selected.country]?.map(state =>(
-                            <MenuItem value={state} key={state}>{state}</MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
+                {
+                    selected.country && options[selected.country] && options[selected.country].length > 0 &&
+                    <FormControl className={this.props.classes.formControl}>
+                        <InputLabel id="state-select-label">State</InputLabel>
+                        <Select
+                            labelId="state-select-label"
+                            id="state-select"
+                            value={selected.state ?? 'None'}
+                            onChange={(event) => stateChanged(event.target.value as string)}
+                        >
+                            <MenuItem value={'None'}>Whole Country</MenuItem>
+                            {selected.country && options[selected.country]?.map(state =>(
+                                <MenuItem value={state} key={state}>{state}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                }
             </div>
         );
     }

@@ -163,4 +163,69 @@ describe('when chrunching numbers', () => {
             })
         });
     });
+    describe('when chrunching a row with no cases', () => {
+        beforeEach(() => {
+            inputData = [{
+                Country: 'USA',
+                State: 'WI',
+                Lat: '3',
+                Long: '44.4',
+                ['1/22/20']: '0',
+                ['1/22/21']: '0',
+                ['1/22/22']: '0'
+            },{
+                Country: 'USA',
+                State: 'CA',
+                Lat: '3',
+                Long: '44.4',
+                ['1/22/20']: '1',
+                ['1/22/21']: '2',
+                ['1/22/22']: '4'
+            },{
+                Country: 'China',
+                State: 'none',
+                Lat: '3',
+                Long: '44.4',
+                ['1/22/20']: '0',
+                ['1/22/21']: '0',
+                ['1/22/22']: '0'
+            },{
+                Country: 'China',
+                State: 'more none',
+                Lat: '3',
+                Long: '44.4',
+                ['1/22/20']: '0',
+                ['1/22/21']: '0',
+                ['1/22/22']: '0'
+            },{
+                Country: 'thailand',
+                State: '',
+                Lat: '3',
+                Long: '44.4',
+                ['1/22/20']: '0',
+                ['1/22/21']: '0',
+                ['1/22/22']: '0'
+            }]
+        });
+
+        it('should omit areas with no cases', () => {
+            const result = crunchNumbers(inputData);
+            expect(result).toEqual({
+                regions: {
+                    USA: {
+                        country: 'USA',
+                        stateData: {
+                            CA: {
+                                country: 'USA',
+                                state: 'CA',
+                                lat: 3,
+                                long: 44.4,
+                                cases: [1, 2, 4]
+                            }
+                        }
+                    }
+                }
+            })
+        });
+    });
 });
