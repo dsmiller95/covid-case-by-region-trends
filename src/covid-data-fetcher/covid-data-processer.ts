@@ -1,5 +1,6 @@
 import { CovidData, CovidDataCountry, CovidDataEntry } from "../covid-store/covid-data-model";
-import { TimeSeriesDataRow } from "./covid-data-service";
+import { TimeSeriesDataRow, dataRowProps } from "./covid-data-service";
+import moment, { Moment } from "moment";
 
 export function crunchNumbers(rawData: TimeSeriesDataRow[]): CovidData {
     const outputData: CovidData = {
@@ -40,5 +41,15 @@ function convertRowToDataEntry(row: TimeSeriesDataRow): CovidDataEntry {
 }
 
 function extractCasesFromDataRow(row: TimeSeriesDataRow): number[] {
-    return [];
+    const dateSeries: [Moment, number][] = [];
+    for (const date in row) {
+        if (row.hasOwnProperty(date) && dataRowProps.find(row => row === date) === undefined) {
+            const caseNumber = row[date];
+            dateSeries.push([moment(date), Number.parseInt(caseNumber)]);
+        }
+    }
+    return dateSeries.sort(
+        ([moment1, cases1], [moment2, cases2]) => (moment1.diff(moment2)))
+        .map(([date, cases]) => cases);
+        
 }

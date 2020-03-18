@@ -7,6 +7,12 @@ export interface TimeSeriesDataRow {
     Long: string;
     [date: string]: string;
 }
+export const dataRowProps: string[] = [
+    'State',
+    'Country',
+    'Lat',
+    'Long'
+]
 
 export async function getRawCovidTimeSeriesData(): Promise<TimeSeriesDataRow[]> {
     const confirmedCovidCasesUrl = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv';
