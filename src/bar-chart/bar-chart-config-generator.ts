@@ -1,16 +1,12 @@
 import { ChartDataSets } from "chart.js";
 import { CovidData, CovidDataEntry } from '../covid-store/covid-data-model';
-
-export interface SubsetSelections {
-    selectedRegions: {country: string, state?: string}[];
-}
+import { SubsetSelections } from "../covid-store/covid-store";
 
 export function getChartConfigFromCovidData(data: CovidData, subsetSelection: SubsetSelections): Chart.ChartConfiguration{
-
     const dataEntries: CovidDataEntry[] = subsetSelection.selectedRegions
         .map(region => {
             const dataSlice = data.regions[region.country];
-            if(!dataSlice){
+            if(!dataSlice) {
                 return undefined;
             }
             if(region.state && dataSlice.stateData){

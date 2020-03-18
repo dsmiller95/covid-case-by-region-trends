@@ -12,6 +12,7 @@ interface IState {
 @observer
 class ChartJS extends React.Component<IProps, IState> {
     private canvasRef: React.RefObject<HTMLCanvasElement>;
+    private chartReference?: Chart;
 
     constructor(props: IProps) {
         super(props);
@@ -19,14 +20,18 @@ class ChartJS extends React.Component<IProps, IState> {
     }
 
     componentDidMount() {
-        console.log('component did update');
         if(this.canvasRef.current) {
-            console.log('making a chart');
-            new Chart(this.canvasRef.current, this.props.chartConfig)
+            this.chartReference = new Chart(
+                this.canvasRef.current,
+                this.props.chartConfig)
         }
     }
 
     public render(){
+        if(this.chartReference && this.props.chartConfig.data){
+            this.chartReference.data = this.props.chartConfig.data;
+            this.chartReference.update();
+        }
         return (
             <canvas
                 id="covid-chart-canvas"

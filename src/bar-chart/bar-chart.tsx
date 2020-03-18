@@ -23,10 +23,8 @@ class BarChart extends React.Component<IProps, IState> {
         
         if(covidStore.covidData) {
             const chartConfig = getChartConfigFromCovidData(
-                covidStore.covidData, 
-                {selectedRegions: [defaultSubset]})
-            console.log(chartConfig);
-            console.log(JSON.stringify(covidStore.covidData));
+                covidStore.covidData,
+                {selectedRegions: [covidStore.selectedDataSet]})
            
             return (
                 <div className="bar-chart">

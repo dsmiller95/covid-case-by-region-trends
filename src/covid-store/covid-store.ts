@@ -1,11 +1,22 @@
 
-import { observable } from "mobx";
-import { CovidData } from "./covid-data-model";
+import { observable, action, computed } from "mobx";
+import { CovidData } from './covid-data-model';
+import { stringify } from "querystring";
+
+export interface SubsetSelection {
+    country: string;
+    state?: string;
+}
+export interface SubsetSelections {
+    selectedRegions: SubsetSelection[];
+}
 
 export class ObservableCovidStore {
     @observable covidData: CovidData | undefined;
     @observable loaded: boolean = true;
     
+    @observable selectedDataSet: SubsetSelection;
+
     constructor(){
         this.covidData = {
             regions: {
@@ -26,6 +37,28 @@ export class ObservableCovidStore {
                 }
             }
         };
+        this.selectedDataSet = {
+            country: "China"
+        }
     }
 
+    @computed get validDataSelection(): {[country: string]: string[]} {
+        const result: Record<string, string[]> = {};
+        if(this.covidData){
+            for(const country in this.covidData.regions){
+                const countryData = this.covidData.regions[country];
+                if(countryData.stateData) {
+                    result[country] = Object.keys(countryData.stateData);
+                } else {
+                    result[country] = [];
+                }
+            }
+        }
+        return result;
+    }
+
+    @action setSelectedDataSet(selection: SubsetSelection){
+        this.selectedDataSet = selection;
+    }
+    
 }
