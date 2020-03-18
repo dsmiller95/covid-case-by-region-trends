@@ -1,10 +1,16 @@
 export interface CovidData {
-    regions: Record<string, CovidDataEntry[]>;
+    regions: Record<string, CovidDataCountry>;
+}
+
+export interface CovidDataCountry {
+    country: string;
+    stateData?: Record<string, CovidDataEntry>;
+    data?: CovidDataEntry;
 }
 
 export interface CovidDataEntry {
-    state?: string;
     country: string;
+    state?: string;
     lat?: number;
     long?: number;
     cases: number[];
